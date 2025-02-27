@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-flask
-mysql-connector-python
-gunicorn
-=======
-flask
-mysql-connector-python
-gunicorn
->>>>>>> 60239accbb9ccd870c4ec6a401e27870ca4b124c
+flask==2.2.2
+mysql-connector-python==8.0.33
+gunicorn==20.1.0
+
