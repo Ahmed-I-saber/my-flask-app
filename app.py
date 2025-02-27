@@ -10,14 +10,15 @@ app.secret_key = "your_secret_key"  # تأكد من تعيين مفتاح سري
 # دالة الاتصال بقاعدة البيانات مع تجميع الاتصالات
 def get_db_connection():
     return mysql.connector.connect(
-        pool_name="mypool",   # اسم المجموعة
-        pool_size=5,          # عدد الاتصالات في المجموعة
-        host="localhost",
-        user="ahmed",
-        password="password",
-        database="SchoolDB",
-        ssl_disabled=True     # تعطيل SSL إذا لم يكن مطلوباً
+        pool_name="mypool",
+        pool_size=5,
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "ahmed"),
+        password=os.environ.get("DB_PASSWORD", "password"),
+        database=os.environ.get("DB_NAME", "SchoolDB"),
+        ssl_disabled=True
     )
+
 
 
 #############################
