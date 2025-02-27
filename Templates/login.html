@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: url('{{ url_for("static", filename="background-night.jpg") }}') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding-bottom: 80px;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 400px;
+      background-color: rgba(255,255,255,0.95);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #003366, #004080);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .card-header img {
+      width: 60px;
+      margin-bottom: 10px;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    .card-header .weather {
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+    .card-body {
+      padding: 30px;
+      background-color: #fff;
+    }
+    .btn-primary {
+      background-color: #c82333;
+      border: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-primary:hover {
+      background-color: #a71d2a;
+    }
+    .footer {
+      background-color: #003366;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="card">
+      <div class="card-header">
+        <!-- شعار المدرسة -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <!-- اسم المدرسة -->
+        <h2>Stars International School</h2>
+        <!-- معلومات الطقس (يمكن تحديثها ديناميكياً) -->
+        <div class="weather">الطقس: 25°C, مشمس</div>
+      </div>
+      <div class="card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <!-- تعطيل التخزين التلقائي للحقول -->
+        <form method="post" autocomplete="off">
+          <div class="form-group">
+            <label for="national_id">Enter National ID</label>
+            <input type="text" name="national_id" id="national_id" class="form-control" placeholder="أدخل الرقم القومي" autocomplete="off">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="container">
+      © IT Dep Stars2 - جميع الحقوق محفوظة
+    </div>
+  </div>
+  
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

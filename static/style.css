@@ -1,0 +1,21 @@
+body {
+  background-color: #ffffff;
+}
+
+.navbar {
+  background-color: #007bff; /* أزرق */
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #dc3545; /* أحمر */
+  border-color: #dc3545;
+}
+
+.card, .table {
+  border-color: #007bff;
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      margin: 0;
+      padding-bottom: 80px;
+    }
+    /* الهيدر */
+    .header {
+      background-color: #003366;
+      color: #fff;
+      padding: 20px 15px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .header img.logo {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+    }
+    /* كارت التسجيل */
+    .registration-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    .registration-card h4 {
+      margin-bottom: 20px;
+      color: #003366;
+      font-weight: 600;
+    }
+    /* جدول التسجيلات */
+    .registrations-table th,
+    .registrations-table td {
+      vertical-align: middle;
+    }
+    /* أزرار الإجراءات */
+    .btn-delete {
+      background-color: #c82333;
+      border: none;
+    }
+    .btn-delete:hover {
+      background-color: #a71d2a;
+    }
+    /* الفوتر */
+    .footer {
+      background-color: #003366;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+      font-size: 0.9rem;
+    }
+    /* تصميم كروت وإطارات الصفحة */
+    .card {
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .card-header {
+      background-color: #003366;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+    .card-header::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 4px;
+      background: #c82333;
+      border-radius: 2px;
+    }
+    .card-header h3 {
+      margin: 0;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div class="header">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+    <h1>Stars International School</h1>
+    <p>Welcome, {{ student.student_name }}</p>
+  </div>
+  
+  <div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- نموذج تسجيل مادة جديدة -->
+    {% if not printed %}
+    <div class="registration-card">
+      <h4>New Registration</h4>
+      <form method="post" action="{{ url_for('save_registration') }}">
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="platform">Select Platform</label>
+            <select class="form-control" name="platform_id" id="platform">
+              <option value="">-- Select Platform --</option>
+              {% for p in platforms %}
+              <option value="{{ p.id }}">{{ p.platform_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="subject">Select Subject</label>
+            <select class="form-control" name="subject_id" id="subject">
+              <option value="">-- Select Subject --</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="teacher">Select Teacher</label>
+            <select class="form-control" name="teacher_id" id="teacher">
+              <option value="0">External</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="course">Select Course</label>
+            <select class="form-control" name="course_id" id="course">
+              <option value="">-- Select Course --</option>
+              {% for c in courses %}
+              <option value="{{ c.id }}">{{ c.course_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="times">Times Registered</label>
+            <input type="number" class="form-control" name="times" id="times" value="1">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Registration</button>
+      </form>
+    </div>
+    {% else %}
+      <div class="alert alert-info">Registrations are locked after printing.</div>
+    {% endif %}
+    
+    <hr>
+    
+    <!-- عرض التسجيلات -->
+    <h4>Registered Courses</h4>
+    <table class="table table-bordered registrations-table">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Platform</th>
+          <th>Teacher</th>
+          <th>Price</th>
+          <th>Course</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reg in registrations %}
+        <tr>
+          <td>{{ reg.reg_id }}</td>
+          <td>{{ reg.subject_name }}</td>
+          <td>{{ reg.platform_name }}</td>
+          <td>{{ reg.teacher_name }}</td>
+          <td>{{ reg.price }}</td>
+          <td>{{ reg.course_id }}</td>
+          <td>
+            {% if not printed %}
+            <a href="{{ url_for('delete_registration', reg_id=reg.reg_id) }}" class="btn btn-danger btn-sm btn-delete">Delete</a>
+            {% else %}
+            Locked
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h5>Total Price: {{ total_price }}</h5>
+    
+    {% if not printed %}
+      <a href="{{ url_for('print_registration') }}" class="btn btn-warning">Print Registration</a>
+    {% else %}
+      <div class="alert alert-info">Registrations have been printed and locked.</div>
+    {% endif %}
+  </div>
+  
+  <div class="footer">
+    <div class="container">
+      © IT Dep Stars2 - جميع الحقوق محفوظة
+    </div>
+  </div>
+  
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      // عند تغيير اختيار المنصة، استدعاء المواد التابعة لها
+      $("#platform").change(function(){
+        var platform_id = $(this).val();
+        if(platform_id){
+          $.ajax({
+            url: "{{ url_for('get_subjects') }}",
+            data: { platform_id: platform_id },
+            dataType: "json",
+            success: function(data){
+              $("#subject").empty();
+              $("#subject").append('<option value="">-- Select Subject --</option>');
+              $.each(data, function(i, item){
+                $("#subject").append('<option value="'+item.id+'">'+item.subject_name+'</option>');
+              });
+            }
+          });
+        } else {
+          $("#subject").empty();
+          $("#subject").append('<option value="">-- Select Subject --</option>');
+        }
+      });
+      
+      // عند تغيير اختيار المادة، استدعاء بيانات المدرسين
+      $("#subject").change(function(){
+        var subject_id = $(this).val();
+        if(subject_id){
+          $.ajax({
+            url: "{{ url_for('get_teachers') }}",
+            data: { subject_id: subject_id },
+            dataType: "json",
+            success: function(data){
+              $("#teacher").empty();
+              $.each(data, function(i, item){
+                $("#teacher").append('<option value="'+item.id+'">'+item.teacher_name+'</option>');
+              });
+            }
+          });
+        } else {
+          $("#teacher").empty();
+          $("#teacher").append('<option value="0">External</option>');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
