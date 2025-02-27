@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 flask
 mysql-connector-python
 gunicorn
+=======
+flask
+mysql-connector-python
+gunicorn
+>>>>>>> 60239accbb9ccd870c4ec6a401e27870ca4b124c
